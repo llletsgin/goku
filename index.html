@@ -102,7 +102,7 @@ body {
 .map {
     position: absolute;
     inset: 0;
-    background-image: url("map3.jpg?v=kyoko1");
+    background-color: #111;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -551,11 +551,11 @@ body {
     <section id="startScreen">
         <div class="start-title">
             즐거운<br>
-            일상 퀘스트
+            가히리 퀘스트
         </div>
 
         <img
-            src="tsuna.png?v=kyoko1"
+            src="tsuna.png?v=kyoko2"
             class="start-monster"
             alt="츠나"
         >
@@ -566,7 +566,7 @@ body {
         </div>
 
         <button class="main-button" id="startButton">
-            등교 시작
+            가히리 등교 시작
         </button>
     </section>
 
@@ -582,7 +582,7 @@ body {
             </div>
 
             <div class="player" id="player">
-                <img src="tsuna.png?v=kyoko1" alt="츠나">
+                <img src="tsuna.png?v=kyoko2" alt="츠나">
             </div>
 
         </div>
@@ -596,7 +596,7 @@ body {
 
         <div class="hint">
             방향키 또는 화살표 키로<br>
-            쿄코를 지나 앞으로 이동
+            위쪽으로 앞으로 이동
         </div>
 
     </section>
@@ -609,7 +609,7 @@ body {
 
             <div class="enemy-status">
                 <div class="status-name">
-                    <span>야생 고쿠데라</span>
+                    <span>츠나</span>
                     <span>Lv.???</span>
                 </div>
 
@@ -621,7 +621,7 @@ body {
             <div class="enemy-platform"></div>
 
             <img
-                src="gokudera.png?v=kyoko1"
+                src="gokudera.png?v=kyoko2"
                 class="enemy-monster"
                 alt="야생 고쿠데라"
             >
@@ -630,7 +630,7 @@ body {
 
             <div class="player-monster-wrap">
                 <img
-                    src="tsuna.png?v=kyoko1"
+                    src="tsuna.png?v=kyoko2"
                     class="player-monster"
                     alt="츠나"
                 >
@@ -638,7 +638,7 @@ body {
 
             <div class="player-status">
                 <div class="status-name">
-                    <span>츠나</span>
+                    <span>야생 고쿠데라</span>
                     <span>Lv.???</span>
                 </div>
 
@@ -652,7 +652,7 @@ body {
             </div>
 
             <img
-                src="ball.png?v=kyoko1"
+                src="ball.png?v=kyoko2"
                 id="pokeball"
                 class="pokeball"
                 alt="몬스터볼"
@@ -689,7 +689,7 @@ body {
 
             <div class="ending-title">
                 즐거운<br>
-                일상 퀘스트 완료!
+                가히리 퀘스트 완료!
             </div>
 
             <div class="ending-sub">
@@ -698,8 +698,8 @@ body {
             </div>
 
             <div class="ending-imgs">
-                <img src="gokudera.png?v=kyoko1" alt="고쿠데라">
-                <img src="tsuna.png?v=kyoko1" alt="츠나">
+                <img src="gokudera.png?v=kyoko2" alt="고쿠데라">
+                <img src="tsuna.png?v=kyoko2" alt="츠나">
             </div>
 
         </div>
@@ -725,6 +725,24 @@ let x = 0;
 let y = 0;
 let encountered = false;
 
+/* map3.jpg 먼저 찾고, 안 뜨면 map3.png를 자동으로 찾음 */
+function loadMapBackground() {
+    const jpgMap = "map3.jpg?v=kyoko2";
+    const pngMap = "map3.png?v=kyoko2";
+
+    const testImage = new Image();
+
+    testImage.onload = function() {
+        map.style.backgroundImage = `url("${jpgMap}")`;
+    };
+
+    testImage.onerror = function() {
+        map.style.backgroundImage = `url("${pngMap}")`;
+    };
+
+    testImage.src = jpgMap;
+}
+
 function showScreen(screen) {
     startScreen.style.display = "none";
     mapScreen.style.display = "none";
@@ -738,8 +756,9 @@ function setInitialPlayerPosition() {
     const mapWidth = map.clientWidth;
     const mapHeight = map.clientHeight;
 
-    x = mapWidth * 0.12;
-    y = mapHeight * 0.68;
+    /* 아래쪽 가운데에서 시작 */
+    x = mapWidth * 0.48;
+    y = mapHeight * 0.78;
 
     updatePlayer();
 }
@@ -763,7 +782,7 @@ function movePlayer(dir) {
     const playerWidth = player.offsetWidth;
     const playerHeight = player.offsetHeight;
 
-    const step = Math.max(18, mapWidth * 0.035);
+    const step = Math.max(18, mapHeight * 0.055);
 
     if (dir === "up") {
         y -= step;
@@ -798,9 +817,10 @@ function movePlayer(dir) {
 function checkEncounter() {
     if (encountered) return;
 
-    const mapWidth = map.clientWidth;
+    const mapHeight = map.clientHeight;
 
-    if (x >= mapWidth * 0.84) {
+    /* 오른쪽 끝이 아니라 위쪽으로 앞으로 가면 배틀 시작 */
+    if (y <= mapHeight * 0.22) {
         encountered = true;
 
         setTimeout(function() {
@@ -810,6 +830,7 @@ function checkEncounter() {
 }
 
 startButton.addEventListener("click", function() {
+    loadMapBackground();
     showScreen(mapScreen);
     setInitialPlayerPosition();
 });
